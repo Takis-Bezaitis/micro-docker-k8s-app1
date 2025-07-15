@@ -1,0 +1,6 @@
+node_modules
+.env
+logs/
+dist/
+k8s/artist-env-secret.yaml
+k8s/album-env-secret.yaml
