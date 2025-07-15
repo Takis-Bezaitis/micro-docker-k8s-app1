@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: artist-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: artist-service
+  template:
+    metadata:
+      labels:
+        app: artist-service
+    spec:
+      containers:
+        - name: artist-service
+          image: artist-service:latest
+          imagePullPolicy: Never  # <- tells Kubernetes to use the local image
+          ports:
+            - containerPort: 5001
+          env:
+            - name: PORT
+              value: "5001"
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: artist-env
+                  key: MONGODB_URI
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: artist-service
+spec:
+  selector:
+    app: artist-service
+  ports:
+    - protocol: TCP
+      port: 5001
+      targetPort: 5001
+  type: ClusterIP

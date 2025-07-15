@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: album-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: album-service
+  template:
+    metadata:
+      labels:
+        app: album-service
+    spec:
+      containers:
+        - name: album-service
+          image: album-service:latest
+          imagePullPolicy: Never  # <- tells Kubernetes to use the local image
+          ports:
+            - containerPort: 5002
+          env:
+            - name: PORT
+              value: "5002"
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: album-env
+                  key: MONGODB_URI
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: album-service
+spec:
+  selector:
+    app: album-service
+  ports:
+    - protocol: TCP
+      port: 5002
+      targetPort: 5002
+  type: ClusterIP
