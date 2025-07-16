@@ -26,3 +26,5 @@ const env = process.env.NODE_ENV || 'development';
     console.log(`🎵 Artist service is running on port: ${PORT}`);
   });
 })();
+
+// Updated comment to trigger CI/CD pipeline
