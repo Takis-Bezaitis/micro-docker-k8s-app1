@@ -1,0 +1,47 @@
+name: 🎯 Continuous Integration
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        service: [artist-service, album-service]
+
+    defaults:
+      run:
+        working-directory: backend/${{ matrix.service }}
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🛠️ Build Docker image
+        run: docker build -t ${{ matrix.service }} .
+
+      - name: 🧪 Placeholder tests
+        run: echo "No tests yet — test step passed ✅"
+
+      - name: 🔐 Check secrets (Mongo URI)
+        run: |
+          echo "Running for service: ${{ matrix.service }}"
+
+          if [ "${{ matrix.service }}" = "artist-service" ]; then
+            echo "🔍 Mongo URI for artists is: ${{ secrets.MONGODB_URI_ARTISTS }}"
+          else
+            echo "🔍 Mongo URI for albums is: ${{ secrets.MONGODB_URI_ALBUMS }}"
+          fi
