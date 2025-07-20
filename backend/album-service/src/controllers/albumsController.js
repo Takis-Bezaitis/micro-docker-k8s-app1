@@ -14,7 +14,7 @@ export const fetchAlbum = async (req, res) => {
   try {
     const album = await Album.findById(id);
     if (!album) {
-      return res.status(404).json({ message: 'Album not found' });
+      return res.status(400).json({ message: 'Album not found' });
     }
     res.status(200).json(album);
   } catch (error) {

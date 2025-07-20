@@ -28,3 +28,19 @@ export const createArtist = async (req, res) => {
         res.status(500).json({message: 'Something went wrong.'});
     }
 }
+
+
+export const fetchArtist = async (req, res) => {
+    const { artistId } = req.params;
+
+    try {
+        const artist = await Artist.findById({_id: artistId});
+        if (!artist) {
+            return res.status(400).json({message: 'Artist not found.'});
+        }
+        res.status(201).json(artist);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: 'Something went wrong.'});
+    }
+}
